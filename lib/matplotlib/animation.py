@@ -1273,9 +1273,10 @@ class Animation:
                 # We create a writer manually so that we can get the
                 # appropriate size for the tag
                 Writer = writers[mpl.rcParams['animation.writer']]
+                fps = save_kwargs.pop("fps",1000. / self._interval)
                 writer = Writer(codec='h264',
                                 bitrate=mpl.rcParams['animation.bitrate'],
-                                fps=1000. / self._interval,
+                                fps=1000. / fps,
                                 **{arg:save_kwargs.pop(arg)
                                    for arg in ("fps", "codec", "bitrate", "extra_args", "metadata")
                                    if arg in save_kwargs
@@ -1332,7 +1333,7 @@ class Animation:
         
         if fps is None and hasattr(self, '_interval'):
             # Convert interval in ms to frames per second
-            fps = 1000 / self._interval
+            fps = save_kwargs.pop("fps",1000 / self._interval)
 
         # If we're not given a default mode, choose one base on the value of
         # the _repeat attribute
