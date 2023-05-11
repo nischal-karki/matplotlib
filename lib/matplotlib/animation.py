@@ -1225,7 +1225,7 @@ class Animation:
         self._resize_id = self._fig.canvas.mpl_connect('resize_event',
                                                        self._on_resize)
 
-    def to_html5_video(self, embed_limit=None):
+    def to_html5_video(self, embed_limit=None, save_kwargs={}):
         """
         Convert the animation to an HTML5 ``<video>`` tag.
 
@@ -1250,6 +1250,9 @@ class Animation:
             If the *embed_limit* is exceeded, this returns the string
             "Video too large to embed."
         """
+        # Remove writer from save_kwargs
+        save_kwargs.pop("writer",None)
+        
         VIDEO_TAG = r'''<video {size} {options}>
   <source type="video/mp4" src="data:video/mp4;base64,{video}">
   Your browser does not support the video tag.
@@ -1273,7 +1276,7 @@ class Animation:
                 writer = Writer(codec='h264',
                                 bitrate=mpl.rcParams['animation.bitrate'],
                                 fps=1000. / self._interval)
-                self.save(str(path), writer=writer)
+                self.save(str(path), writer=writer,**save_kwargs)
                 # Now open and base64 encode.
                 vid64 = base64.encodebytes(path.read_bytes())
 
@@ -1304,7 +1307,7 @@ class Animation:
         else:
             return 'Video too large to embed.'
 
-    def to_jshtml(self, fps=None, embed_frames=True, default_mode=None):
+    def to_jshtml(self, fps=None, embed_frames=True, default_mode=None, save_kwargs={}):
         """
         Generate HTML representation of the animation.
 
@@ -1319,6 +1322,9 @@ class Animation:
             'once', 'reflect'}``. Defaults to ``'loop'`` if the *repeat*
             parameter is True, otherwise ``'once'``.
         """
+        # Remove writer from save_kwargs
+        save_kwargs.pop("writer",None)
+        
         if fps is None and hasattr(self, '_interval'):
             # Convert interval in ms to frames per second
             fps = 1000 / self._interval
@@ -1337,7 +1343,7 @@ class Animation:
                 writer = HTMLWriter(fps=fps,
                                     embed_frames=embed_frames,
                                     default_mode=default_mode)
-                self.save(str(path), writer=writer)
+                self.save(str(path), writer=writer, **save_kwargs)
                 self._html_representation = path.read_text()
 
         return self._html_representation
