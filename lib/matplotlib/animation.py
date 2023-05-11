@@ -1275,7 +1275,12 @@ class Animation:
                 Writer = writers[mpl.rcParams['animation.writer']]
                 writer = Writer(codec='h264',
                                 bitrate=mpl.rcParams['animation.bitrate'],
-                                fps=1000. / self._interval)
+                                fps=1000. / self._interval,
+                                **{save_kwargs.pop(arg)
+                                   for arg in ("fps", "codec", "bitrate", "extra_args", "metadata")
+                                   if arg in save_kwargs
+                                  }
+                               )
                 self.save(str(path), writer=writer,**save_kwargs)
                 # Now open and base64 encode.
                 vid64 = base64.encodebytes(path.read_bytes())
@@ -1342,7 +1347,12 @@ class Animation:
                 path = Path(tmpdir, "temp.html")
                 writer = HTMLWriter(fps=fps,
                                     embed_frames=embed_frames,
-                                    default_mode=default_mode)
+                                    default_mode=default_mode,
+                                    **{save_kwargs.pop(arg)
+                                       for arg in ("fps", "codec", "bitrate", "extra_args", "metadata")
+                                       if arg in save_kwargs
+                                      }
+                                   )
                 self.save(str(path), writer=writer, **save_kwargs)
                 self._html_representation = path.read_text()
 
