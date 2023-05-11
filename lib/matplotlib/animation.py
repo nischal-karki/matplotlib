@@ -1276,7 +1276,7 @@ class Animation:
                 writer = Writer(codec='h264',
                                 bitrate=mpl.rcParams['animation.bitrate'],
                                 fps=1000. / self._interval,
-                                **{save_kwargs.pop(arg)
+                                **{arg:save_kwargs.pop(arg)
                                    for arg in ("fps", "codec", "bitrate", "extra_args", "metadata")
                                    if arg in save_kwargs
                                   }
@@ -1348,7 +1348,7 @@ class Animation:
                 writer = HTMLWriter(fps=fps,
                                     embed_frames=embed_frames,
                                     default_mode=default_mode,
-                                    **{save_kwargs.pop(arg)
+                                    **{arg:save_kwargs.pop(arg)
                                        for arg in ("fps", "codec", "bitrate", "extra_args", "metadata")
                                        if arg in save_kwargs
                                       }
